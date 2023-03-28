@@ -31,7 +31,7 @@ public class JWTToken {
         claimsMap.put("id", userId);
         claimsMap.put("username", user.getUsername());
         claimsMap.put("email", user.getEmail());
-        claimsMap.put("name", user.getName());
+        claimsMap.put("name", user.getFirstname());
         claimsMap.put("lastname", user.getLastname());
 
         return Jwts.builder()
