@@ -24,6 +24,9 @@ public class UserService implements UserDetailsService {
         return build(user);
     }
 
+    public User loadUserById(Long id) {
+        return userRepository.findUserById(id).orElse(null);
+    }
 
     public static User build(User user) {
         var authorities = user.getRoles().stream()
