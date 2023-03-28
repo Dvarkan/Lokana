@@ -1,14 +1,12 @@
-package com.dv.Lokana.entitys.security;
+package com.dv.Lokana.security;
 
 import com.dv.Lokana.entitys.User;
-import com.dv.Lokana.service.UserService;
+import com.dv.Lokana.service.UserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.apache.juli.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +27,7 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
     public static final Logger LOG = LoggerFactory.getLogger(JWTAutenticationFilter.class);
 
     private final JWTToken jwtToken;
-    private final UserService userService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -37,7 +35,7 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
            String jwt = getJWTFromRequest(request);
            if (StringUtils.hasText(jwt) && jwtToken.validateToken(jwt)) {
                Long userId = jwtToken.getUserIdIsToken(jwt);
-               User userDatails = userService.loadUserById(userId);
+               User userDatails = userDetailsService.loadUserById(userId);
 
                UsernamePasswordAuthenticationToken aut = new UsernamePasswordAuthenticationToken(
                        userDatails,

@@ -1,4 +1,4 @@
-package com.dv.Lokana.entitys.security;
+package com.dv.Lokana.security;
 
 import com.dv.Lokana.entitys.User;
 import io.jsonwebtoken.*;
