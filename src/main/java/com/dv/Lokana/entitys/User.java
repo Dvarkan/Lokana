@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,20 +19,21 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String firstname;
 
     @Column(nullable = false)
     private String lastname;
 
     @Column(unique = true, nullable = false)
     private String username;
+
     @Column(unique = true)
     private String email;
 
@@ -57,5 +59,34 @@ public class User {
     @PrePersist
     private void onCreate() {
         this.createdDate = LocalDateTime.now();
+    }
+
+    /*qb
+     * SECURITY
+     */
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

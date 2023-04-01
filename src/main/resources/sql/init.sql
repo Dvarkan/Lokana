@@ -1,6 +1,6 @@
 CREATE TABLE users(
                       id BIGSERIAL PRIMARY KEY,
-                      name VARCHAR(128) NOT NULL ,
+                      firstname VARCHAR(128) NOT NULL ,
                       lastname VARCHAR(128) NOT NULL ,
                       username VARCHAR(128) NOT NULL UNIQUE ,
                       email VARCHAR(128) NOT NULL UNIQUE ,
