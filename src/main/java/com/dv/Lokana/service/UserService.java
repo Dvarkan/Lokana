@@ -1,5 +1,6 @@
 package com.dv.Lokana.service;
 
+import com.dv.Lokana.dto.UserDto;
 import com.dv.Lokana.entitys.User;
 import com.dv.Lokana.exceptions.UserExistException;
 import com.dv.Lokana.payload.request.SignupRequest;
@@ -7,8 +8,11 @@ import com.dv.Lokana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.Principal;
 
 import static com.dv.Lokana.entitys.enums.Role.USER;
 
@@ -38,7 +42,21 @@ public class UserService {
         }
     }
 
+    public User updateUser(UserDto userDto, Principal principal) {
+       User user = findUserByPrincipal(principal);
 
+       user.setFirstname(userDto.getFirstname());
+       user.setLastname(userDto.getLastname());
+       user.setBio(userDto.getBio());
 
+       LOG.info("Update user");
+
+       return userRepository.save(user);
+    }
+
+    private User findUserByPrincipal(Principal principal) {
+        return userRepository.findUserByUsername(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found with username " + principal.getName()));
+    }
 
 }

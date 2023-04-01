@@ -1,7 +1,7 @@
 package com.dv.Lokana.security;
 
 import com.dv.Lokana.entitys.User;
-import com.dv.Lokana.service.UserDetailsService;
+import com.dv.Lokana.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
     public static final Logger LOG = LoggerFactory.getLogger(JWTAutenticationFilter.class);
 
     private final JWTToken jwtToken;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
            String jwt = getJWTFromRequest(request);
            if (StringUtils.hasText(jwt) && jwtToken.validateToken(jwt)) {
                Long userId = jwtToken.getUserIdIsToken(jwt);
-               User userDatails = userDetailsService.loadUserById(userId);
+               User userDatails = customUserDetailsService.loadUserById(userId);
 
                UsernamePasswordAuthenticationToken aut = new UsernamePasswordAuthenticationToken(
                        userDatails,
@@ -50,7 +50,6 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
            LOG.error("Could not set user authentication");
        }
        filterChain.doFilter(request, response);
-
     }
 
     private String getJWTFromRequest(HttpServletRequest request) {

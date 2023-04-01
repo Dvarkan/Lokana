@@ -33,6 +33,7 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String username;
+
     @Column(unique = true)
     private String email;
 
@@ -60,9 +61,10 @@ public class User implements UserDetails {
         this.createdDate = LocalDateTime.now();
     }
 
-    /**
+    /*qb
      * SECURITY
      */
+
     @Override
     public String getPassword() {
         return password;

@@ -1,7 +1,6 @@
 package com.dv.Lokana.payload.request;
 
 import com.dv.Lokana.annotations.PasswordMatches;
-import com.dv.Lokana.annotations.ValidEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,8 +12,8 @@ import lombok.Data;
 public class SignupRequest {
 
     @Email(message = "It should have email format")
-    @NotBlank(message = "User rmail is required")
-    @ValidEmail
+    @NotBlank(message = "User email is required")
+    @Email
     private String email;
 
     @NotEmpty(message = "Please entry your name")
@@ -27,7 +26,10 @@ public class SignupRequest {
     private String username;
 
     @NotEmpty(message = "Password is required")
-    @Size(min = 8)
+    @Size(min = 6)
     private String password;
+
+    @NotEmpty(message = "Password is required")
+    @Size(min = 6)
     private String confirmPassword;
 }

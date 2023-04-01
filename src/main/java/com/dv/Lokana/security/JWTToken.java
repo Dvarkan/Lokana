@@ -19,19 +19,16 @@ import java.util.Map;
 public class JWTToken {
     private static final Logger LOG = LoggerFactory.getLogger(JWTToken.class);
 
-
     public String generateToken(Authentication authentication) {
         User user = (User)authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime() + SecurityConstants.EXPIRATION_TIME);
 
         String userId = Long.toString(user.getId());
-
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("id", userId);
         claimsMap.put("username", user.getUsername());
         claimsMap.put("email", user.getEmail());
-        claimsMap.put("name", user.getFirstname());
         claimsMap.put("lastname", user.getLastname());
 
         return Jwts.builder()
