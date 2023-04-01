@@ -4,7 +4,7 @@ import com.dv.Lokana.entitys.Image;
 import com.dv.Lokana.entitys.Post;
 import com.dv.Lokana.entitys.User;
 import com.dv.Lokana.exceptions.PostNotFoundException;
-import com.dv.Lokana.repository.ImageRepostory;
+import com.dv.Lokana.repository.ImageRepository;
 import com.dv.Lokana.repository.PostRepository;
 import com.dv.Lokana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class ImageService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final ImageRepostory imageRepostory;
+    private final ImageRepository imageRepository;
 
     @Value("${app.image.bucket:/home/dvarkan/program/project/Lokana/image}")
     private final String bucket;
@@ -39,9 +39,9 @@ public class ImageService {
     public void uploadImageToUser(MultipartFile file, InputStream content, Principal principal) {
         Path fullImagePath = Path.of(bucket, file.getOriginalFilename());
         User user = findUserByPrincipal(principal);
-        Image userImage = imageRepostory.findByUserId(user.getId()).orElse(null);
+        Image userImage = imageRepository.findByUserId(user.getId()).orElse(null);
         if(!ObjectUtils.isEmpty(userImage)) {
-            imageRepostory.delete(userImage);
+            imageRepository.delete(userImage);
         }
 
         Image image = Image.builder()
@@ -53,7 +53,7 @@ public class ImageService {
             Files.createDirectories(fullImagePath.getParent());
             Files.write(fullImagePath, content.readAllBytes(), CREATE, TRUNCATE_EXISTING);
         }
-        imageRepostory.save(image);
+        imageRepository.save(image);
     }
 
     @SneakyThrows
@@ -70,11 +70,11 @@ public class ImageService {
             Files.createDirectories(fullImagePath.getParent());
             Files.write(fullImagePath, content.readAllBytes(), CREATE, TRUNCATE_EXISTING);
         }
-        imageRepostory.save(image);
+        imageRepository.save(image);
     }
 
     public Optional<byte[]> getImageForPost(Long postId) {
-        Image image = imageRepostory.findByPostId(postId)
+        Image image = imageRepository.findByPostId(postId)
                 .orElse(null);
 
         if (!ObjectUtils.isEmpty(image)) {
@@ -85,7 +85,7 @@ public class ImageService {
 
     public Optional<byte[]> getImageForUser(Principal principal) {
         User user = findUserByPrincipal(principal);
-        Image image = imageRepostory.findByUserId(user.getId())
+        Image image = imageRepository.findByUserId(user.getId())
                 .orElse(null);
 
         if (!ObjectUtils.isEmpty(image)) {

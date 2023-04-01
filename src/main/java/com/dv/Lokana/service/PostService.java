@@ -5,7 +5,7 @@ import com.dv.Lokana.entitys.Image;
 import com.dv.Lokana.entitys.Post;
 import com.dv.Lokana.entitys.User;
 import com.dv.Lokana.exceptions.PostNotFoundException;
-import com.dv.Lokana.repository.ImageRepostory;
+import com.dv.Lokana.repository.ImageRepository;
 import com.dv.Lokana.repository.PostRepository;
 import com.dv.Lokana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final ImageRepostory imageRepostory;
+    private final ImageRepository imageRepository;
 
     public Post createPost(PostDto postDto, Principal principal) {
         User user = findUserByPrincipal(principal);
@@ -59,10 +59,10 @@ public class PostService {
     public void removePost(Long id , Principal principal) {
         User user = findUserByPrincipal(principal);
         Post post = postRepository.findPostByIdAndUser(id, user)
-                .orElseThrow(() -> new PostNotFoundException("Post not found"));;
-        Optional<Image> image = imageRepostory.findByPostId(id);
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+        Optional<Image> image = imageRepository.findByPostId(id);
         postRepository.delete(post);
-        image.ifPresent(imageRepostory::delete);
+        image.ifPresent(imageRepository::delete);
     }
 
     public void addAndRemoveLike(Long id, String username) {

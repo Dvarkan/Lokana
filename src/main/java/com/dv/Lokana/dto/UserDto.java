@@ -9,6 +9,7 @@ import lombok.Data;
 public class UserDto {
     private Long id;
     private String bio;
+    private String username;
 
     @NotEmpty
     private String firstname;
