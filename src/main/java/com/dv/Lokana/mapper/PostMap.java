@@ -2,8 +2,10 @@ package com.dv.Lokana.mapper;
 
 import com.dv.Lokana.dto.PostDto;
 import com.dv.Lokana.entitys.Post;
+import org.springframework.stereotype.Component;
 
-public class PostMapping implements Mapper<Post, PostDto>{
+@Component
+public class PostMap implements Mapper<Post, PostDto>{
     @Override
     public PostDto map(Post object) {
         return PostDto.builder()

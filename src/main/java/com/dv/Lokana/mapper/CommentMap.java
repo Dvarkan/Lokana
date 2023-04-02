@@ -2,8 +2,10 @@ package com.dv.Lokana.mapper;
 
 import com.dv.Lokana.dto.CommentDto;
 import com.dv.Lokana.entitys.Comment;
+import org.springframework.stereotype.Component;
 
-public class CommentMapper implements Mapper<Comment, CommentDto>{
+@Component
+public class CommentMap implements Mapper<Comment, CommentDto>{
     @Override
     public CommentDto map(Comment object) {
         return CommentDto.builder()

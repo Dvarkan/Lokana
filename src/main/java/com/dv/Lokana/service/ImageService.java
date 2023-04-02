@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.Principal;
@@ -33,10 +32,10 @@ public class ImageService {
     private final ImageRepository imageRepository;
 
     @Value("${app.image.bucket:/home/dvarkan/program/project/Lokana/image}")
-    private final String bucket;
+    private String bucket;
 
     @SneakyThrows
-    public void uploadImageToUser(MultipartFile file, InputStream content, Principal principal) {
+    public void uploadImageToUser(MultipartFile file, Principal principal) {
         Path fullImagePath = Path.of(bucket, file.getOriginalFilename());
         User user = findUserByPrincipal(principal);
         Image userImage = imageRepository.findByUserId(user.getId()).orElse(null);
@@ -49,6 +48,7 @@ public class ImageService {
                 .imagePath(fullImagePath.toString())
                 .name(file.getOriginalFilename())
                 .build();
+        var content = file.getInputStream();
         try(content) {
             Files.createDirectories(fullImagePath.getParent());
             Files.write(fullImagePath, content.readAllBytes(), CREATE, TRUNCATE_EXISTING);
@@ -57,7 +57,7 @@ public class ImageService {
     }
 
     @SneakyThrows
-    public void uoloadImageToPost(MultipartFile file, InputStream content, Long postId) {
+    public void uploadImageToPost(MultipartFile file, Long postId) {
         Path fullImagePath = Path.of(bucket, file.getOriginalFilename());
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
@@ -66,10 +66,12 @@ public class ImageService {
                 .name(file.getOriginalFilename())
                 .imagePath(fullImagePath.toString())
                 .build();
+        var content = file.getInputStream();
         try(content) {
             Files.createDirectories(fullImagePath.getParent());
             Files.write(fullImagePath, content.readAllBytes(), CREATE, TRUNCATE_EXISTING);
         }
+
         imageRepository.save(image);
     }
 

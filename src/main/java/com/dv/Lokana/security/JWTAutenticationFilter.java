@@ -2,6 +2,7 @@ package com.dv.Lokana.security;
 
 import com.dv.Lokana.entitys.User;
 import com.dv.Lokana.service.CustomUserDetailsService;
+import io.jsonwebtoken.io.Serializer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,10 +36,10 @@ public class JWTAutenticationFilter extends OncePerRequestFilter {
            String jwt = getJWTFromRequest(request);
            if (StringUtils.hasText(jwt) && jwtToken.validateToken(jwt)) {
                Long userId = jwtToken.getUserIdIsToken(jwt);
-               User userDatails = customUserDetailsService.loadUserById(userId);
+               User userDetails = customUserDetailsService.loadUserById(userId);
 
                UsernamePasswordAuthenticationToken aut = new UsernamePasswordAuthenticationToken(
-                       userDatails,
+                       userDetails,
                        null,
                        Collections.emptyList()
                );

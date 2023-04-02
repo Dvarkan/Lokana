@@ -45,7 +45,7 @@ public class PostService {
         return postRepository.findAllByOrderByCreatedDateDesc();
     }
 
-    public Post getAllPostsFromId(Long postId ,Principal principal) {
+    public Post getPostsbyId(Long postId, Principal principal) {
         User user = findUserByPrincipal(principal);
         return postRepository.findPostByIdAndUser(postId, user)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
@@ -61,11 +61,11 @@ public class PostService {
         Post post = postRepository.findPostByIdAndUser(id, user)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
         Optional<Image> image = imageRepository.findByPostId(id);
-        postRepository.delete(post);
         image.ifPresent(imageRepository::delete);
+        postRepository.delete(post);
     }
 
-    public void addAndRemoveLike(Long id, String username) {
+    public Post addAndRemoveLike(Long id, String username) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
@@ -81,6 +81,7 @@ public class PostService {
             post.getLikedUsers().add(username);
         }
         postRepository.save(post);
+        return post;
     }
 
 
